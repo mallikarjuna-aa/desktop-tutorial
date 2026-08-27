@@ -1,5 +1,11 @@
-# Welcome to GitHub Desktop!
+# desktop-tutorial
 
-This is your README. READMEs are where you can communicate what your project is and how to use it.
+## API/Data Mapping Artifacts
 
-Write your name on line 6, save it, and then head back to GitHub Desktop.
+Story `3074014` artifacts are documented in:
+
+- `docs/api-mapping/README.md`
+- `docs/api-mapping/endpoint-mapping.yaml`
+- `docs/api-mapping/field-mapping.yaml`
+- `docs/api-mapping/error-mapping.md`
+- `docs/api-mapping/flow-diagrams.md`

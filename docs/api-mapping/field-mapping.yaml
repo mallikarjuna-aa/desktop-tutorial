@@ -1,0 +1,148 @@
+version: 1
+entity: Customer
+description: Source-to-target field mapping for customer payload transformation.
+fieldMappings:
+  - sourceField: customerId
+    sourceType: string
+    sourceRequired: true
+    targetField: id
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: null
+    transformRule: "trim(source.customerId)"
+  - sourceField: externalReference
+    sourceType: string
+    sourceRequired: false
+    targetField: external_ref
+    targetType: string
+    targetRequired: false
+    defaultWhenMissing: "AUTO-{customerId}"
+    transformRule: "if missing then concat('AUTO-', source.customerId)"
+  - sourceField: firstName
+    sourceType: string
+    sourceRequired: true
+    targetField: first_name
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: "Unknown"
+    transformRule: "trim(source.firstName)"
+  - sourceField: lastName
+    sourceType: string
+    sourceRequired: true
+    targetField: last_name
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: "Unknown"
+    transformRule: "trim(source.lastName)"
+  - sourceField: email
+    sourceType: string
+    sourceRequired: false
+    targetField: email_address
+    targetType: string
+    targetRequired: false
+    defaultWhenMissing: null
+    transformRule: "lowercase(trim(source.email))"
+  - sourceField: phone
+    sourceType: string
+    sourceRequired: false
+    targetField: phone_number
+    targetType: string
+    targetRequired: false
+    defaultWhenMissing: null
+    transformRule: "normalize_to_e164(source.phone)"
+  - sourceField: dateOfBirth
+    sourceType: string
+    sourceRequired: false
+    targetField: dob
+    targetType: date
+    targetRequired: false
+    defaultWhenMissing: null
+    transformRule: "parse_date(source.dateOfBirth, 'yyyy-MM-dd')"
+  - sourceField: status
+    sourceType: string
+    sourceRequired: true
+    targetField: lifecycle_status
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: active
+    transformRule: "map_enum({ACTIVE:'active', INACTIVE:'inactive', PENDING:'pending'})"
+  - sourceField: preferredLanguage
+    sourceType: string
+    sourceRequired: false
+    targetField: locale
+    targetType: string
+    targetRequired: false
+    defaultWhenMissing: en-US
+    transformRule: "map_locale(source.preferredLanguage)"
+  - sourceField: marketingOptIn
+    sourceType: boolean
+    sourceRequired: false
+    targetField: consent.marketing
+    targetType: boolean
+    targetRequired: true
+    defaultWhenMissing: false
+    transformRule: "coalesce(source.marketingOptIn, false)"
+  - sourceField: address.line1
+    sourceType: string
+    sourceRequired: true
+    targetField: address.street_1
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: "UNKNOWN"
+    transformRule: "trim(source.address.line1)"
+  - sourceField: address.line2
+    sourceType: string
+    sourceRequired: false
+    targetField: address.street_2
+    targetType: string
+    targetRequired: false
+    defaultWhenMissing: null
+    transformRule: "trim(source.address.line2)"
+  - sourceField: address.city
+    sourceType: string
+    sourceRequired: true
+    targetField: address.city
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: "UNKNOWN"
+    transformRule: "trim(source.address.city)"
+  - sourceField: address.state
+    sourceType: string
+    sourceRequired: true
+    targetField: address.state_code
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: "NA"
+    transformRule: "uppercase(trim(source.address.state))"
+  - sourceField: address.postalCode
+    sourceType: string
+    sourceRequired: true
+    targetField: address.postal_code
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: "00000"
+    transformRule: "normalize_postal_code(source.address.postalCode)"
+  - sourceField: address.country
+    sourceType: string
+    sourceRequired: true
+    targetField: address.country_code
+    targetType: string
+    targetRequired: true
+    defaultWhenMissing: US
+    transformRule: "map_country_to_iso2(source.address.country)"
+  - sourceField: createdAt
+    sourceType: string
+    sourceRequired: true
+    targetField: created_utc
+    targetType: datetime
+    targetRequired: true
+    defaultWhenMissing: "1970-01-01T00:00:00Z"
+    transformRule: "to_utc_iso8601(source.createdAt)"
+  - sourceField: updatedAt
+    sourceType: string
+    sourceRequired: true
+    targetField: modified_utc
+    targetType: datetime
+    targetRequired: true
+    defaultWhenMissing: "1970-01-01T00:00:00Z"
+    transformRule: "to_utc_iso8601(source.updatedAt)"
