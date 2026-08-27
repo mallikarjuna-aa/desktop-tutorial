@@ -1,0 +1,132 @@
+version: 1
+integration: CustomerIntegration
+endpoints:
+  - name: CustomerUpsertSync
+    flowType: synchronous
+    source:
+      method: POST
+      urlPath: /source-api/v1/customers
+      pathParams: []
+      queryParams: []
+      requestFormat:
+        contentType: application/json
+        schemaRef: CustomerSourceRequest
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerSourceResponse
+    target:
+      method: PUT
+      urlPath: /target-api/v2/customers/{id}
+      pathParams:
+        - name: id
+          type: string
+          required: true
+          source: request.body.customerId
+      queryParams:
+        - name: overwrite
+          type: boolean
+          required: false
+          default: true
+      requestFormat:
+        contentType: application/json
+        schemaRef: CustomerTargetUpsertRequest
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerTargetUpsertResponse
+  - name: CustomerGetSync
+    flowType: synchronous
+    source:
+      method: GET
+      urlPath: /source-api/v1/customers/{customerId}
+      pathParams:
+        - name: customerId
+          type: string
+          required: true
+      queryParams: []
+      requestFormat:
+        contentType: none
+        schemaRef: none
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerSourceResponse
+    target:
+      method: GET
+      urlPath: /target-api/v2/customers/{id}
+      pathParams:
+        - name: id
+          type: string
+          required: true
+          source: source.path.customerId
+      queryParams:
+        - name: include
+          type: string
+          required: false
+          default: basic
+      requestFormat:
+        contentType: none
+        schemaRef: none
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerTargetResponse
+  - name: CustomerBulkSyncAsync
+    flowType: asynchronous
+    source:
+      method: GET
+      urlPath: /source-api/v1/customers/changes
+      pathParams: []
+      queryParams:
+        - name: since
+          type: datetime
+          required: true
+        - name: page
+          type: integer
+          required: false
+          default: 1
+        - name: pageSize
+          type: integer
+          required: false
+          default: 500
+      requestFormat:
+        contentType: none
+        schemaRef: none
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerSourceBulkChangesResponse
+    target:
+      method: POST
+      urlPath: /target-api/v2/customer-sync/jobs
+      pathParams: []
+      queryParams: []
+      requestFormat:
+        contentType: application/json
+        schemaRef: CustomerTargetBulkJobRequest
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerTargetBulkJobAccepted
+  - name: CustomerBulkSyncJobStatus
+    flowType: asynchronous
+    source:
+      method: none
+      urlPath: n/a
+      pathParams: []
+      queryParams: []
+      requestFormat:
+        contentType: none
+        schemaRef: none
+      responseFormat:
+        contentType: none
+        schemaRef: none
+    target:
+      method: GET
+      urlPath: /target-api/v2/customer-sync/jobs/{jobId}
+      pathParams:
+        - name: jobId
+          type: string
+          required: true
+      queryParams: []
+      requestFormat:
+        contentType: none
+        schemaRef: none
+      responseFormat:
+        contentType: application/json
+        schemaRef: CustomerTargetBulkJobStatusResponse
